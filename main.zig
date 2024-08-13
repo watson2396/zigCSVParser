@@ -5,17 +5,10 @@ pub fn main() !void {
 
     // TODO: file name input
 
-    const file = try std.fs.cwd().readFile("weather.csv", .read_only);
-    defer file.close();
+    //pub fn readFileAlloc(self: Dir, allocator: mem.Allocator, file_path: []const u8, max_bytes: usize) ![]u8
+    const allocator = std.heap.page_allocator;
+    var read_bytes = std.fs.cwd().readFileAlloc(allocator, "./weather.csv", 65535);
+    defer read_bytes.deinit();
 
-    const stat = try file.stat();
-
-    var buffer: [stat.size]u8 = undefined;
-    var fixed_buffer_alloc = std.heap.FixedBufferAllocator.init(&buffer);
-    var list = std.ArrayList(u32).init(fixed_buffer_alloc.allocator());
-    defer list.deinit();
-
-    list = try file.readAll(&list);
-
-    std.debug.print("List: {any}\n", .{list.items});
+    std.debug.print("List: {any}\n", .{read_bytes.items});
 }
