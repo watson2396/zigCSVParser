@@ -3,12 +3,20 @@ const std = @import("std");
 pub fn main() !void {
     // start by reading a file I guess
 
-    // TODO: file name input
+    // TODO: cli file name input
 
-    //pub fn readFileAlloc(self: Dir, allocator: mem.Allocator, file_path: []const u8, max_bytes: usize) ![]u8
+    const file_path = "./weather.csv";
+
+    var file = try std.fs.cwd().openFile(file_path, .{});
+    defer file.close();
+
     const allocator = std.heap.page_allocator;
-    var read_bytes = std.fs.cwd().readFileAlloc(allocator, "./weather.csv", 65535);
-    defer read_bytes.deinit();
 
-    std.debug.print("List: {any}\n", .{read_bytes.items});
+    const contents = try file.reader().readAllAlloc(
+        allocator,
+        try file.getEndPos(),
+    );
+    defer allocator.free(contents);
+
+    std.debug.print("List: {any}\n", .{contents});
 }
