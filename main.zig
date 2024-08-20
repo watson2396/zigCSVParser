@@ -19,4 +19,7 @@ pub fn main() !void {
     defer allocator.free(contents);
 
     std.debug.print("List: {any}\n", .{contents});
+
+    // TODO: decode file contents to understand CSV format
+
 }
