@@ -23,6 +23,12 @@ pub fn main() !void {
 
     const writer = line.writer();
     var line_no: usize = 0;
+    // since while loop runs until a false condition and the fn
+    // doesn't return a false value only error or void
+    // the reader is run until the delimiter then the
+    // while loop body is run then another loop starts
+    // when the end of file is hit that is an error
+    // which is handled by the else part
     while (reader.streamUntilDelimiter(writer, '\n', null)) {
         // Clear the line so we can reuse it.
         defer line.clearRetainingCapacity();
