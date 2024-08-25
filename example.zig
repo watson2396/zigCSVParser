@@ -1,17 +1,14 @@
 const std = @import("std");
-const ascii = std.ascii;
+const fs = std.fs;
 const print = std.debug.print;
 
 pub fn main() !void {
-    // start by reading a file I guess
-    // TODO: cli file name input
-    const allocator = std.heap.page_allocator;
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer gpa.deinit();
+    const allocator = gpa.allocator();
 
-    var file = try std.fs.cwd().openFile("./weather.csv", .{});
+    const file = try fs.cwd().openFile("tests/zig-zen.txt", .{});
     defer file.close();
-
-    // TODO: decode file contents to understand CSV format
-    // print out each line
 
     // Wrap the file reader in a buffered reader.
     // Since it's usually faster to read a bunch of bytes at once.
@@ -40,19 +37,4 @@ pub fn main() !void {
     }
 
     print("Total lines: {d}\n", .{line_no});
-
-    // var line_buffer: [500]u8 = undefined;
-    // var idx: u16 = 0;
-    // for (contents) |character| {
-    //     if (character == ascii.control_code.lf or character == ascii.control_code.cr) {
-    //         std.debug.print("line: {d}\n", .{line_buffer});
-    //         idx = 0;
-    //         for (line_buffer, 0..) |_, i| {
-    //             line_buffer[i] = 0;
-    //         }
-    //     } else {
-    //         line_buffer[idx] = character;
-    //         idx += idx;
-    //     }
-    // }
 }
